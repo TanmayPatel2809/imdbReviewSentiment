@@ -1,0 +1,14 @@
+ipykernel
+pandas
+numpy
+matplotlib
+datasets
+pyyaml
+joblib
+ensure
+python-box
+seaborn
+wordcloud
+transformers
+torch
+accelerate

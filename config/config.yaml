@@ -1,0 +1,22 @@
+artifacts_root: artifacts
+
+data_ingestion:
+  root_dir: artifacts/data_ingestion
+  hf_dataset_name: "stanfordnlp/imdb"
+  local_data_file: artifacts/data_ingestion/Dataset
+
+data_validation:
+  root_dir: artifacts/data_validation
+  data_dir: artifacts/data_ingestion/Dataset
+  STATUS_FILE: artifacts/data_validation/status.txt
+
+data_transformation:
+  root_dir: artifacts/data_transformation
+  data_path: artifacts/data_ingestion/Dataset
+  filtered_data_path: artifacts/data_transformation/Dataset
+  tokenizer_name: distilbert-base-uncased
+
+model_trainer:
+  root_dir: artifacts/model_trainer
+  data_path: artifacts/data_transformation/Dataset
+  model_ckpt: distilbert-base-uncased
