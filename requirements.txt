@@ -12,3 +12,4 @@ wordcloud
 transformers
 torch
 accelerate
+scikit-learn

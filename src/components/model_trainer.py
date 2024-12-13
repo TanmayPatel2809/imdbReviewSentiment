@@ -4,10 +4,18 @@ import torch
 from datasets import load_from_disk
 import os
 from src.entity.config_entity import ModelTrainerConfig
+from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 
 class ModelTrainer:
     def __init__(self, config: ModelTrainerConfig):
         self.config = config
+    
+    def compute_metrics(self, eval_pred):
+        logits, labels = eval_pred
+        predictions = logits.argmax(axis=-1)
+        accuracy = accuracy_score(labels, predictions)
+        precision, recall, f1, _ = precision_recall_fscore_support(labels, predictions, average="weighted")
+        return {"accuracy": accuracy, "precision": precision, "recall": recall, "f1": f1}
     
     def train(self):
         device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -16,7 +24,6 @@ class ModelTrainer:
         model = AutoModelForSequenceClassification.from_pretrained(self.config.model_ckpt, num_labels=2).to(device)
         
         dataset = load_from_disk(self.config.data_path)
-
 
         trainer_args = TrainingArguments(
             output_dir=self.config.root_dir,
@@ -37,6 +44,7 @@ class ModelTrainer:
             train_dataset=dataset["train"],
             eval_dataset=dataset["validation"],
             tokenizer=tokenizer,
+            compute_metrics=self.compute_metrics,  # Add compute_metrics function
         )
 
         torch.cuda.empty_cache()
